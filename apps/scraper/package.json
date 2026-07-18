@@ -1,5 +1,5 @@
 {
-  "name": "@newsletter/scraper",
+  "name": "@arnius/scraper",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@newsletter/core": "*",
+    "@arnius/core": "*",
     "@supabase/supabase-js": "^2.84.0",
     "cheerio": "^1.1.2",
     "tsx": "^4.20.0"

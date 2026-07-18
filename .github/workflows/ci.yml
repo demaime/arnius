@@ -20,7 +20,7 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Lint y formato (Biome)
+      - name: Lint y formato
         run: npm run lint
 
       - name: Typecheck

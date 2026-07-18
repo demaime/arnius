@@ -13,3 +13,9 @@ export interface ArticleInsert {
   summary: string | null;
   publishedAt: string | null; // ISO 8601 UTC
 }
+
+/** Resultado de scrapear la nota individual (fecha + primer párrafo). */
+export interface ArticleData {
+  publishedAt: string | null; // ISO 8601 UTC
+  summary: string | null;
+}

@@ -1,4 +1,4 @@
-# newsletter-v2
+# arnius
 
 Noticias de agenda, multi-usuario. Scrapea las portadas de los principales portales argentinos y cada usuario ve solo las noticias cuyos **títulos** matchean su propia lista de palabras clave.
 
@@ -17,7 +17,7 @@ Noticias de agenda, multi-usuario. Scrapea las portadas de los principales porta
 npm install
 npm run dev        # app web en localhost:3000
 npm run scrape     # corrida local del scraper (requiere .env en apps/scraper)
-npm run lint       # biome
+npm run lint
 npm run typecheck
 npm run test
 ```
