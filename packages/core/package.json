@@ -1,0 +1,23 @@
+{
+  "name": "@newsletter/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@date-fns/tz": "^1.4.1",
+    "cheerio": "^1.1.2",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^4.1.4"
+  }
+}
