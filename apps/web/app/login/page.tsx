@@ -1,4 +1,4 @@
-import { LoginButton } from "./login-button";
+import { GoogleButton } from "./google-button";
 
 export default function LoginPage() {
   return (
@@ -7,7 +7,7 @@ export default function LoginPage() {
       <p className="text-gray-600">
         Noticias de agenda: seguí tus palabras clave en los principales portales argentinos.
       </p>
-      <LoginButton />
+      <GoogleButton />
     </main>
   );
 }
