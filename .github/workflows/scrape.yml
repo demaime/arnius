@@ -39,7 +39,11 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       # GitHub deshabilita los crons de repos sin actividad por 60 días
-      # (así murió la versión anterior de este proyecto). Este paso lo
-      # re-habilita vía API en cada corrida, sin commits dummy.
-      - uses: gautamkrishnar/keepalive-workflow@v2
+      # (así murió la versión anterior de este proyecto). Este paso re-habilita
+      # el workflow vía la API oficial en cada corrida: mientras corra, no
+      # puede apagarse. Sin actions de terceros ni commits dummy.
+      - name: Keepalive (anti auto-disable de 60 días)
         if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT repos/${{ github.repository }}/actions/workflows/scrape.yml/enable
