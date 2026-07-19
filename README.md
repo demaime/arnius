@@ -9,8 +9,8 @@ Noticias de agenda, multi-usuario. arnius scrapea las portadas de los principale
 ```
                     ┌─────────────────────┐
   GitHub Actions    │      SCRAPER        │        Supabase (Postgres)
-  cron 8×/día  ───▶ │  fetch + cheerio    │ ───▶  articles (TODAS las notas,
-                    │  11 portales        │        sin filtrar, 3 días)
+  cron cada 30' ──▶ │  fetch + cheerio    │ ───▶  articles (TODAS las notas,
+  (2h de noche)     │  11 portales        │        sin filtrar, 3 días)
                     └─────────────────────┘               │
                                                           │  full-text search
                                                           │  español + unaccent
@@ -47,7 +47,7 @@ arnius/
 | Datos + Auth | Supabase: Postgres con Row Level Security, Google Sign-In (Google Identity Services + `signInWithIdToken` con nonce) |
 | Scraping     | `fetch` nativo + cheerio; detección de charset por página (hay portales que mezclan UTF-8 e ISO-8859-1)              |
 | Matching     | Postgres FTS: configuración `spanish` + `unaccent`, tsvector generado **solo sobre títulos**, índice GIN             |
-| Scheduling   | GitHub Actions (cron) + keepalive automático contra el auto-disable de 60 días                                       |
+| Scheduling   | GitHub Actions: cron cada 30 min (diurno ART, 2 h de madrugada) + keepalive contra el auto-disable de 60 días        |
 | PWA          | Serwist (manifest + service worker; nunca cachea datos ni auth)                                                      |
 | Calidad      | Vitest (100+ tests contra fixtures reales), ESLint, Prettier, CI en cada push                                        |
 
