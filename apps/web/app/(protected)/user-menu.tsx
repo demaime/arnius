@@ -87,26 +87,26 @@ export function UserMenu({
           open ? "animate-panel-in motion-reduce:animate-none" : "hidden"
         }`}
       >
-          <div className="border-b border-border px-3 pb-2 pt-1">
-            <p className="truncate font-semibold">{displayName}</p>
-            {email ? <p className="truncate text-xs text-muted">{email}</p> : null}
-          </div>
-
-          <div className="mt-1 flex flex-col">
-            <ThemeToggle dbTheme={dbTheme} />
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-md px-3 text-left text-sm text-foreground transition-colors duration-150 hover:bg-surface motion-reduce:transition-none"
-              >
-                <span className="text-muted">
-                  <LogoutIcon />
-                </span>
-                Salir
-              </button>
-            </form>
-          </div>
+        <div className="border-b border-border px-3 pb-2 pt-1">
+          <p className="truncate font-semibold">{displayName}</p>
+          {email ? <p className="truncate text-xs text-muted">{email}</p> : null}
         </div>
+
+        <div className="mt-1 flex flex-col">
+          <ThemeToggle dbTheme={dbTheme} />
+          <form action="/auth/signout" method="post">
+            <button
+              type="submit"
+              className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-md px-3 text-left text-sm text-foreground transition-colors duration-150 hover:bg-surface motion-reduce:transition-none"
+            >
+              <span className="text-muted">
+                <LogoutIcon />
+              </span>
+              Salir
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
