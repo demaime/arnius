@@ -74,6 +74,15 @@ function ChevronIcon({ open, className = "" }: { open: boolean; className?: stri
   );
 }
 
+/** Separador de la barra de datos: bullet grueso en el amarillo de la paleta. */
+function StatsDot() {
+  return (
+    <span aria-hidden="true" className="mx-1.5 font-bold text-highlight">
+      •
+    </span>
+  );
+}
+
 const DATE_OPTIONS: { value: DateFilter; label: string }[] = [
   { value: "all", label: "Últimos 3 días" },
   { value: "1h", label: "Última hora" },
@@ -274,23 +283,23 @@ export function HomeShell({
     (filters.date !== "all" ? 1 : 0);
 
   const listKey = `${filters.portals.join(",")}|${filters.keyword}|${filters.date}|${dateRef?.nowMs ?? 0}`;
-  const greeting = displayName.split(" ")[0];
 
   return (
     <div className="w-full px-4 sm:px-8">
       {/* Todas las franjas son opacas: el contenido scrollea por debajo sin verse. */}
       <header className="sticky top-0 z-40 -mx-4 sm:-mx-8">
-        {/* Zona superior: celeste pleno; todo el texto va en navy accent-fg. */}
-        <div className="bg-accent px-4 pt-3 pb-3 sm:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            <div>
-              <Link href="/" className="text-2xl font-bold lowercase tracking-tight text-accent-fg">
-                arnius<span className="text-highlight">.</span>
-              </Link>
-              <p className="text-sm font-medium text-accent-fg">Hola, {greeting}</p>
-            </div>
+        {/* Zona superior: celeste con sombra interior abajo (contra la línea
+            amarilla) para darle volumen; todo el texto va en navy accent-fg. */}
+        <div className="bg-accent px-4 py-2 shadow-[inset_0_-14px_20px_-14px_rgba(15,36,56,0.45)] sm:px-8">
+          <div className="flex items-center justify-between gap-2">
+            <Link
+              href="/"
+              className="text-xl font-bold lowercase tracking-tight text-accent-fg sm:text-2xl"
+            >
+              arnius<span className="text-highlight">.</span>
+            </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <KeywordsModal keywords={keywords} />
 
               <div ref={panelRef} className="relative">
@@ -299,16 +308,17 @@ export function HomeShell({
                   onClick={() => (panelOpen ? closePanel() : setPanelOpen(true))}
                   aria-expanded={panelOpen}
                   aria-controls="feed-filters"
+                  aria-label="Filtros"
                   className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-3 text-sm font-medium text-accent-fg transition-colors duration-150 hover:bg-accent-fg/10 motion-reduce:transition-none"
                 >
                   <FilterIcon />
-                  Filtros
+                  <span className="hidden sm:inline">Filtros</span>
                   {activeCount > 0 ? (
                     <span className="flex size-5 items-center justify-center rounded-full bg-accent-fg text-xs font-bold text-white">
                       {activeCount}
                     </span>
                   ) : null}
-                  <ChevronIcon open={panelOpen} />
+                  <ChevronIcon open={panelOpen} className="hidden sm:block" />
                 </button>
 
                 {panelOpen ? (
@@ -446,8 +456,14 @@ export function HomeShell({
             {activeCount > 0
               ? `${filtered.length} de ${articles.length} noticias`
               : `${articles.length} noticias`}
-            {lastRunIso ? ` · Actualizado ${formatRelative(lastRunIso)}` : ""}
-            {` · Próxima en ${formatNextScrape()}`}
+            {lastRunIso ? (
+              <>
+                <StatsDot />
+                Actualizado {formatRelative(lastRunIso)}
+              </>
+            ) : null}
+            <StatsDot />
+            Próxima en {formatNextScrape()}
           </p>
         </div>
       </header>

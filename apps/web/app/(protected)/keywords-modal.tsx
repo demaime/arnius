@@ -14,6 +14,24 @@ const initialState: KeywordActionState = { error: null };
 
 const emptySubscribe = () => () => {};
 
+function TagIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+      aria-hidden="true"
+    >
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+    </svg>
+  );
+}
+
 function CloseIcon() {
   return (
     <svg
@@ -61,9 +79,11 @@ export function KeywordsModal({ keywords }: { keywords: Keyword[] }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        aria-label="Mis palabras"
         className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-3 text-sm font-medium text-accent-fg transition-colors duration-150 hover:bg-accent-fg/10 motion-reduce:transition-none"
       >
-        Mis palabras
+        <TagIcon />
+        <span className="hidden sm:inline">Mis palabras</span>
         <span className="flex size-5 items-center justify-center rounded-full bg-accent-fg text-xs font-bold text-white">
           {keywords.length}
         </span>

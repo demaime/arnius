@@ -11,11 +11,13 @@ export interface ArticleInsert {
   url: string;
   title: string;
   summary: string | null;
+  author: string | null;
   publishedAt: string | null; // ISO 8601 UTC
 }
 
-/** Resultado de scrapear la nota individual (fecha + primer párrafo). */
+/** Resultado de scrapear la nota individual (fecha + primer párrafo + firma). */
 export interface ArticleData {
   publishedAt: string | null; // ISO 8601 UTC
   summary: string | null;
+  author: string | null;
 }

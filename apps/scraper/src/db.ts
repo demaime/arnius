@@ -15,6 +15,7 @@ export interface ArticleRow {
   url: string;
   title: string;
   summary: string | null;
+  author: string | null;
   published_at: string | null;
 }
 

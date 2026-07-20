@@ -10,6 +10,7 @@ export interface FeedArticle {
   url: string;
   title: string;
   summary: string | null;
+  author: string | null;
   published_at: string | null;
   first_seen_at: string;
   portal_slug: string;
@@ -39,12 +40,12 @@ function ExternalLinkIcon() {
 }
 
 /* Logo del medio: /public/logos/{slug}.webp (80px, generados desde los originales).
-   Tile blanco en ambos temas para que los logos con colores oscuros no se pierdan. */
+   Círculo blanco plano en ambos temas: los logos oscuros no se pierden en dark. */
 function PortalLogo({ slug }: { slug: string }) {
   return (
     <div
       aria-hidden="true"
-      className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-white p-1"
+      className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-1.5"
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- asset local chico, sin optimizador */}
       <img src={`/logos/${slug}.webp`} alt="" loading="lazy" className="size-full object-contain" />
@@ -76,6 +77,10 @@ function ArticleItem({
           </span>
           <time dateTime={when}>{formatRelative(when)}</time>
         </div>
+
+        {article.author ? (
+          <p className="mt-0.5 truncate text-xs text-muted">{article.author}</p>
+        ) : null}
 
         <button
           type="button"

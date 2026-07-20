@@ -88,7 +88,7 @@ export function UserMenu({
         }`}
       >
         <div className="border-b border-border px-3 pb-2 pt-1">
-          <p className="truncate font-semibold">{displayName}</p>
+          <p className="truncate font-semibold">Hola, {displayName.split(" ")[0]}</p>
           {email ? <p className="truncate text-xs text-muted">{email}</p> : null}
         </div>
 

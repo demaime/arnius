@@ -71,11 +71,13 @@ async function enrichNewItems(
     if (!portal) return;
 
     let summary: string | null = null;
+    let author: string | null = null;
     let publishedAt: string | null = null;
     try {
       const html = await fetchPage(item.url, portal.encoding);
       const data = extractArticleData(html, portal, now);
       summary = data.summary;
+      author = data.author;
       publishedAt = data.publishedAt;
     } catch {
       // La nota se guarda igual sin enriquecer: el feed usa first_seen_at.
@@ -99,6 +101,7 @@ async function enrichNewItems(
       url: item.url,
       title: item.title,
       summary,
+      author,
       published_at: publishedAt,
     });
   });

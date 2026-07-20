@@ -9,6 +9,23 @@ const FIXTURES = join(__dirname, "fixtures", "article");
 // que los formatos relativos ("hace 2 horas") sean deterministas.
 const NOW = new Date("2026-07-17T15:00:00.000Z");
 
+// Qué fixtures traen firma utilizable (personal o "Redacción"). Las que no,
+// validan los filtros de basura (Organization, créditos de foto, dominios).
+// Si se recapturan fixtures, actualizar este mapa.
+const FIXTURE_HAS_AUTHOR: Record<string, boolean> = {
+  infobae: false,
+  clarin: true,
+  lanacion: false,
+  perfil: true,
+  pagina12: false,
+  ambito: true,
+  cronista: true,
+  lpo: true,
+  letrap: true,
+  cenital: true,
+  derechadiario: true,
+};
+
 describe("extracción de nota individual (fixtures reales)", () => {
   for (const portal of PORTALS) {
     describe(portal.slug, () => {
@@ -30,6 +47,21 @@ describe("extracción de nota individual (fixtures reales)", () => {
         expect(data.summary).not.toContain("�");
         expect(data.summary).not.toMatch(/Ã[©³±­]/);
       });
+
+      if (FIXTURE_HAS_AUTHOR[portal.slug]) {
+        it("extrae la firma de la nota", () => {
+          expect(data.author).not.toBeNull();
+          expect((data.author as string).length).toBeLessThanOrEqual(120);
+          expect(data.author).not.toContain("�");
+          expect(data.author).not.toMatch(/Ã[©³±­]/);
+          expect(data.author).not.toMatch(/^por\s/i);
+          expect(data.author).not.toMatch(/https?:|@/);
+        });
+      } else {
+        it("descarta firmas basura (sin autor)", () => {
+          expect(data.author).toBeNull();
+        });
+      }
     });
   }
 });

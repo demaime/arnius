@@ -23,5 +23,11 @@ export interface PortalConfig {
      * (ld+json → meta → <time datetime>) no encuentra nada.
      */
     dateFallbacks?: Array<($: CheerioAPI) => string | undefined>;
+    /**
+     * Fallbacks de autor por portal, solo si la cascada genérica
+     * (ld+json Person → meta author) no encuentra nada. Ojo con selectores
+     * amplios: pueden capturar firmas de cards ajenas o créditos de foto.
+     */
+    authorFallbacks?: Array<($: CheerioAPI) => string | undefined>;
   };
 }
