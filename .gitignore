@@ -6,7 +6,7 @@ node_modules/
 out/
 next-env.d.ts
 
-# env — nunca commitear credenciales
+# env 
 .env
 .env.*
 !.env.example
@@ -16,6 +16,7 @@ dist/
 coverage/
 *.tsbuildinfo
 .vercel/
+docs
 
 # service worker generado por serwist
 apps/web/public/sw.js

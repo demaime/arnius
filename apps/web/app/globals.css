@@ -1,8 +1,150 @@
 @import "tailwindcss";
 
-/* Estética base neutra (blanco/negro/grises) para poder trabajar.
-   La identidad visual definitiva es una etapa aparte, al final del proyecto. */
+/* ============================================================
+   Tokens semánticos de tema.
+   Celeste #75aadb: decorativo (2.5:1 sobre blanco, NO usar como
+   texto en claro). Para texto/links usar --accent-strong.
+   ============================================================ */
+:root {
+  color-scheme: light;
+  --background: #eef2f6;
+  --foreground: #111417;
+  --muted: #47525c;
+  --surface: #ffffff;
+  --border: #d3dce4;
+  --accent: #75aadb;
+  --accent-strong: #2b6da4;
+  --accent-fg: #0f2438;
+  --accent-contrast: #ffffff;
+  --highlight: #f5b848;
+  --highlight-fg: #161616;
+  --danger: #b42318;
+  --ring: #2b6da4;
+}
+
+/* Tema oscuro explícito. MANTENER EN SINCRONÍA con el bloque
+   @media de abajo (modo "sistema" sin JS). */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #131a21;
+  --foreground: #f2f3f4;
+  --muted: #9daab6;
+  --surface: #1c242d;
+  --border: #2d3844;
+  --accent: #75aadb;
+  --accent-strong: #75aadb;
+  --accent-fg: #0f2438;
+  --accent-contrast: #10202e;
+  --highlight: #f5b848;
+  --highlight-fg: #161616;
+  --danger: #f97066;
+  --ring: #75aadb;
+}
+
+/* Modo "sistema": sin data-theme decide el SO. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+    --background: #131a21;
+    --foreground: #f2f3f4;
+    --muted: #9daab6;
+    --surface: #1c242d;
+    --border: #2d3844;
+    --accent: #75aadb;
+    --accent-strong: #75aadb;
+    --accent-fg: #0f2438;
+    --accent-contrast: #10202e;
+    --highlight: #f5b848;
+    --highlight-fg: #161616;
+    --danger: #f97066;
+    --ring: #75aadb;
+  }
+}
+
+/* Variante dark:* para los pocos casos que no alcancen con tokens. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(html:not([data-theme]), html:not([data-theme]) *) {
+      @slot;
+    }
+  }
+}
+
+/* Puente tokens → utilities de Tailwind (bg-background, text-muted, ...). */
+@theme inline {
+  --font-sans: var(--font-libre-franklin), ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-highlight: var(--highlight);
+  --color-highlight-fg: var(--highlight-fg);
+  --color-danger: var(--danger);
+  --color-ring: var(--ring);
+  --animate-panel-in: panel-in 200ms ease-out;
+}
+
 body {
-  background: #ffffff;
-  color: #111111;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Focus visible consistente en toda la app. */
+:where(a, button, input, select, textarea, [role="button"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Scrollbar finita celeste. */
+html {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--accent) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-strong);
+}
+
+/* Crossfade del cambio de tema (View Transitions, disparada desde theme-toggle). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -36,3 +36,15 @@ export function formatTime(iso: string): string {
 export function formatDateTime(iso: string): string {
   return fullDate.format(new Date(iso));
 }
+
+const dayKey = new Intl.DateTimeFormat("en-CA", {
+  timeZone: TIMEZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** "2026-07-20": día calendario en hora argentina, para comparar fechas. */
+export function dayKeyAR(date: Date | string): string {
+  return dayKey.format(typeof date === "string" ? new Date(date) : date);
+}

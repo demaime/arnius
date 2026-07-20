@@ -4,12 +4,13 @@ import type { NextConfig } from "next";
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
-  // En desarrollo no hay service worker (evita cachés fantasma al programar).
-  disable: process.env.NODE_ENV === "development",
 });
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@arnius/core"],
 };
 
-export default withSerwist(nextConfig);
+// En desarrollo no envolvemos con Serwist: no hay service worker (evita cachés
+// fantasma al programar) y su wrapper inyecta config de webpack, que hace
+// abortar a `next dev` en Next 16 (Turbopack por default).
+export default process.env.NODE_ENV === "development" ? nextConfig : withSerwist(nextConfig);

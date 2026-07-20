@@ -1,15 +1,24 @@
+import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/lib/supabase/server";
-import { formatRelative } from "@/lib/format";
-import { FeedList, type FeedArticle } from "./feed-list";
+import { HomeShell } from "./home-shell";
+import type { FeedArticle } from "./feed-list";
+import type { Keyword } from "./keywords-modal";
+import type { Theme } from "./theme-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const supabase = await createSupabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const [feedRes, keywordsRes, lastRunRes] = await Promise.all([
+  if (!user) redirect("/login");
+
+  const [feedRes, keywordsRes, profileRes, lastRunRes] = await Promise.all([
     supabase.rpc("my_feed"),
-    supabase.from("user_keywords").select("keyword"),
+    supabase.from("user_keywords").select("id, keyword").order("keyword"),
+    supabase.from("profiles").select("display_name, theme").maybeSingle(),
     supabase
       .from("scrape_runs")
       .select("finished_at, status")
@@ -20,36 +29,27 @@ export default async function HomePage() {
   ]);
 
   const articles = (feedRes.data ?? []) as FeedArticle[];
-  const keywords = (keywordsRes.data ?? []).map((k) => k.keyword as string);
-  const lastRun = lastRunRes.data;
+  const keywords = (keywordsRes.data ?? []) as Keyword[];
+  const profile = profileRes.data;
+
+  const displayName =
+    profile?.display_name ??
+    (user.user_metadata.full_name as string | undefined) ??
+    (user.email ?? "").split("@")[0];
+  const avatarUrl =
+    (user.user_metadata.avatar_url as string | undefined) ??
+    (user.user_metadata.picture as string | undefined) ??
+    null;
 
   return (
-    <main className="flex flex-col gap-4">
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-bold">Noticias</h1>
-        {lastRun?.finished_at ? (
-          <p className="text-xs text-gray-500">Actualizado {formatRelative(lastRun.finished_at)}</p>
-        ) : null}
-      </div>
-
-      {keywords.length === 0 ? (
-        <p className="text-gray-600">
-          No tenés palabras en tu lista. Agregá la primera desde el botón «Mis palabras» (arriba)
-          para armar tu feed.
-        </p>
-      ) : articles.length === 0 ? (
-        <p className="text-gray-600">
-          No hay noticias de los últimos 3 días que matcheen tus palabras ({keywords.join(", ")}).
-          Ajustá tu lista desde el botón «Mis palabras» (arriba).
-        </p>
-      ) : (
-        <>
-          <p className="text-sm text-gray-500">
-            {articles.length} noticias de los últimos 3 días para tus {keywords.length} palabras.
-          </p>
-          <FeedList articles={articles} keywords={keywords} />
-        </>
-      )}
-    </main>
+    <HomeShell
+      articles={articles}
+      keywords={keywords}
+      displayName={displayName}
+      email={user.email ?? null}
+      avatarUrl={avatarUrl}
+      dbTheme={(profile?.theme ?? "system") as Theme}
+      lastRunIso={lastRunRes.data?.finished_at ?? null}
+    />
   );
 }

@@ -1,15 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Libre_Franklin } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const libreFranklin = Libre_Franklin({
+  variable: "--font-libre-franklin",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,14 +23,30 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef2f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#131a21" },
+  ],
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // El tema explícito viaja en cookie para que el SSR lo pinte sin flash;
+  // sin cookie (o "system") no se setea data-theme y decide el SO vía CSS.
+  const theme = (await cookies()).get("arnius-theme")?.value;
+  const dataTheme = theme === "light" || theme === "dark" ? theme : undefined;
+
   return (
-    <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html
+      lang="es"
+      data-theme={dataTheme}
+      className={`${libreFranklin.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
     </html>
   );
 }

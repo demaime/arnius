@@ -56,7 +56,7 @@ arnius/
 El scraping de HTML es frágil por naturaleza (los portales rediseñan sin avisar). arnius lo asume y se defiende:
 
 - **Tests contra fixtures reales**: cada parser se prueba contra portadas y notas reales capturadas. Cuando un portal cambia, el flujo de reparación es: re-descargar fixture → ver el test fallar → ajustar selector.
-- **Salud por corrida**: cada ejecución registra cuántas notas trajo cada portal (`scrape_runs`). La vista `/health` lo muestra en la app.
+- **Salud por corrida**: cada ejecución registra cuántas notas trajo cada portal (`scrape_runs`); la vista `portal_health` de la base lo resume.
 - **Alertas gratis**: si un portal devuelve 0 notas en 3 corridas seguidas, el proceso termina con error → el workflow de GitHub queda rojo → email automático.
 - **Anti-apagado**: GitHub deshabilita los crons de repos sin actividad por 60 días (así murió la v1 de este proyecto). El workflow incluye un paso de keepalive que lo re-habilita vía API en cada corrida.
 - **Idempotencia**: re-correr el scraper no duplica nada (upsert por URL) y no re-visita notas ya conocidas ni descartadas.
