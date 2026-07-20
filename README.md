@@ -13,14 +13,14 @@ Noticias de agenda, multi-usuario. arnius scrapea las portadas de los principale
   (2h de noche)     │  11 portales        │        sin filtrar, 3 días)
                     └─────────────────────┘               │
                                                           │  full-text search
-                                                          │  español + unaccent
+                                                          │  palabra exacta + plurales
                     ┌─────────────────────┐               ▼
   Usuario ────────▶ │   WEB (Next.js)     │ ◀───  my_feed(): filtra por las
   (login Google)    │   feed + keywords   │        keywords DEL usuario al leer
                     └─────────────────────┘
 ```
 
-La decisión central es el **modelo invertido**: el scraper no sabe nada de keywords — guarda _todo_ lo que aparece en las portadas. El filtrado ocurre al momento de leer, con una función SQL (`my_feed`) que cruza los artículos contra las palabras del usuario autenticado usando full-text search en español (índice GIN + `unaccent`): "dolar" matchea "Dólar", "jubilación" matchea "jubilaciones", y "reforma laboral" exige las dos palabras juntas. Un solo scraping sirve a todos los usuarios, tengan las palabras que tengan.
+La decisión central es el **modelo invertido**: el scraper no sabe nada de keywords — guarda _todo_ lo que aparece en las portadas. El filtrado ocurre al momento de leer, con una función SQL (`my_feed`) que cruza los artículos contra las palabras del usuario autenticado usando full-text search por **palabra completa**, insensible a mayúsculas y tildes, sin stemming pero con plurales por regla (`keywordVariants` en `packages/core`): "dólar" matchea "Dólar" y "dólares", pero "pele" no matchea "peleas" — se flexiona el número, no se derivan raíces. "reforma laboral" exige las dos palabras juntas. Un solo scraping sirve a todos los usuarios, tengan las palabras que tengan.
 
 ## Portales
 
@@ -46,7 +46,7 @@ arnius/
 | Web          | Next.js (App Router, Server Components + Server Actions), TypeScript estricto, Tailwind                              |
 | Datos + Auth | Supabase: Postgres con Row Level Security, Google Sign-In (Google Identity Services + `signInWithIdToken` con nonce) |
 | Scraping     | `fetch` nativo + cheerio; detección de charset por página (hay portales que mezclan UTF-8 e ISO-8859-1)              |
-| Matching     | Postgres FTS: configuración `spanish` + `unaccent`, tsvector generado **solo sobre títulos**, índice GIN             |
+| Matching     | Postgres FTS `simple` + `unaccent` **solo sobre títulos** (GIN) + variantes de plural precalculadas por keyword      |
 | Scheduling   | GitHub Actions: cron cada 30 min (diurno ART, 2 h de madrugada) + keepalive contra el auto-disable de 60 días        |
 | PWA          | Serwist (manifest + service worker; nunca cachea datos ni auth)                                                      |
 | Calidad      | Vitest (100+ tests contra fixtures reales), ESLint, Prettier, CI en cada push                                        |

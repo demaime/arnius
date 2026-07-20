@@ -3,6 +3,7 @@ export * from "./dates";
 export * from "./decode";
 export * from "./extract";
 export * from "./highlight";
+export * from "./keyword-variants";
 export * from "./portals";
 export * from "./types";
 export * from "./url";

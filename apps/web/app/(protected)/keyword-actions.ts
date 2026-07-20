@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { keywordVariants } from "@arnius/core";
 import { createSupabaseServer } from "@/lib/supabase/server";
 
 export interface KeywordActionState {
@@ -26,9 +27,18 @@ export async function addKeyword(
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const normalized = keyword.toLowerCase();
+
+  // Palabras vacías del español ("de", "la") matchearían media portada.
+  // Si el RPC falla se sigue de largo: mejor aceptar de más que bloquear el alta.
+  const { data: isStopword } = await supabase.rpc("is_stopword", { kw: normalized });
+  if (isStopword === true) {
+    return { error: `"${keyword}" es demasiado común para usarla como palabra clave.` };
+  }
+
   const { error } = await supabase
     .from("user_keywords")
-    .insert({ user_id: user.id, keyword: keyword.toLowerCase() });
+    .insert({ user_id: user.id, keyword: normalized, variants: keywordVariants(normalized) });
 
   if (error) {
     // 23505 = clave duplicada (misma palabra con/sin tildes o mayúsculas)

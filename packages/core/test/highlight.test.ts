@@ -43,6 +43,17 @@ describe("highlightTitle", () => {
     expect(segments).toEqual([{ text: "Un título cualquiera", match: false }]);
   });
 
+  it("resalta plurales/singulares de la keyword (mismo criterio que el feed)", () => {
+    expect(matches(highlightTitle("Los dólares suben", ["dólar"]))).toEqual(["dólares"]);
+    expect(matches(highlightTitle("Ganó la elección", ["elecciones"]))).toEqual(["elección"]);
+  });
+
+  it('"pele" resalta "Pelé" pero no "peleas" ni "pelearon"', () => {
+    expect(matches(highlightTitle("La camiseta de Pelé", ["pele"]))).toEqual(["Pelé"]);
+    expect(matches(highlightTitle("Hubo peleas en el estadio", ["pele"]))).toEqual([]);
+    expect(matches(highlightTitle("Se pelearon en la cancha", ["pele"]))).toEqual([]);
+  });
+
   it("la ñ no matchea con n", () => {
     expect(matches(highlightTitle("El niño juega", ["nino"]))).toEqual(["niño"]);
   });

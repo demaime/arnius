@@ -14,7 +14,7 @@ App multi-usuario de noticias argentinas: scrapea portadas de 11 portales y cada
 - `packages/core/` — parsers de portales (configs declarativas en `src/portals/`), fechas es-AR, matching/highlight, decode de charset. Tests contra fixtures HTML reales en `test/fixtures/` (portadas + notas capturadas; los tests corren offline).
 - `apps/scraper/` — orquestador: portadas → diff contra DB → enriquecer solo lo nuevo → upsert. Idempotente. `skipped_urls` recuerda notas viejas para no re-visitarlas. Health: portal con 3 corridas malas ⇒ exit 1 ⇒ workflow rojo ⇒ email.
 - `apps/web/` — Next.js App Router. Auth: botón nativo Google (GIS + `signInWithIdToken` con nonce). Keywords en MODAL (no hay ruta /keywords). Feed usa `rpc('my_feed')`. OJO: en Next 16 el middleware se llama `proxy.ts`. Build con `--webpack` (Serwist no soporta Turbopack).
-- `supabase/migrations/` — schema completo: FTS español+unaccent SOLO sobre títulos, RLS en todo, trigger de signup (perfil + 5 keywords semilla), retención 3 días (la aplica el scraper).
+- `supabase/migrations/` — schema completo: FTS por palabra exacta + plurales precalculados (`keywordVariants` de core → `user_keywords.variants`) SOLO sobre títulos, RLS en todo, trigger de signup (perfil + 5 keywords semilla), retención 3 días (la aplica el scraper).
 - `.github/workflows/` — `ci.yml` (calidad en cada push) y `scrape.yml` (cron 8×/día ART + keepalive propio vía `gh api` contra el auto-disable de 60 días de GitHub).
 
 ## Gotchas aprendidos

@@ -83,12 +83,18 @@ export function GoogleButton() {
       theme: "outline",
       size: "large",
       text: "signin_with",
+      shape: "pill",
+      width: 280,
       locale: "es",
     });
   }, [clientId, router]);
 
   if (!clientId) {
-    return <p role="alert">Falta configurar NEXT_PUBLIC_GOOGLE_CLIENT_ID.</p>;
+    return (
+      <p role="alert" className="text-sm text-[#f97066]">
+        Falta configurar NEXT_PUBLIC_GOOGLE_CLIENT_ID.
+      </p>
+    );
   }
 
   return (
@@ -100,7 +106,12 @@ export function GoogleButton() {
         }}
       />
       <div ref={containerRef} />
-      {error ? <p role="alert">{error}</p> : null}
+      {/* Danger fijo del tema oscuro: esta página es siempre oscura (video + máscara). */}
+      {error ? (
+        <p role="alert" className="text-sm text-[#f97066]">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
